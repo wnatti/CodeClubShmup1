@@ -17,8 +17,9 @@ namespace CodeClubShmup1.Scenes
         public MenuScene()
             :base()
         {
-            button1 = new Button(Resources.GetTexture("Laatikko"),
-                new Vector2(400, 250));
+            button1 = new Button(Resources.GetTexture("button"),
+                new Vector2(400, 250),
+                "VITTU", Resources.GetFont("SpriteFont1"));
             button1.OnButtonPressed += onButton1Press;
         }
 
@@ -47,7 +48,8 @@ namespace CodeClubShmup1.Scenes
 
         void onButton1Press()
         {
-            Console.WriteLine("Nyt nappuloidaan urakalla.");
+            SceneSys.CloseCurrentScene();
+            SceneSys.PauseCurrentScene(false);
         }
     }
 }

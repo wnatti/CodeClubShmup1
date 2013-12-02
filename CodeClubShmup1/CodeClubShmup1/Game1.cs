@@ -23,6 +23,8 @@ namespace CodeClubShmup1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        public static Camera camera;
+
         public static Rectangle screen_size
         {
            get;
@@ -64,6 +66,8 @@ namespace CodeClubShmup1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            camera = new Camera(graphics);
+
             Resources.Init(Content);
             DrawSys.InitSpriteBatch(spriteBatch);
 
@@ -73,7 +77,7 @@ namespace CodeClubShmup1
             Resources.LoadTexture2D("Bullet");
             Resources.LoadTexture2D("Enemy");
             Resources.LoadTexture2D("Suojakilpi");
-            Resources.LoadTexture2D("Laatikko");
+            Resources.LoadTexture2D("button");
             Resources.LoadTexture2D("perkele");
             Resources.LoadTexture2D("perkele2");
 
@@ -118,6 +122,14 @@ namespace CodeClubShmup1
             if (Input.IsKeyDown(Keys.Escape))
                 this.Exit();
 
+            if (Input.IsKeyDown(Keys.L))
+                camera.addZoom(dt);
+            if (Input.IsKeyDown(Keys.K))
+                camera.addZoom(-dt);
+            if (Input.IsKeyDown(Keys.O))
+                camera.addRotation(dt);
+            if (Input.IsKeyDown(Keys.P))
+                camera.addRotation(-dt);
 
             SceneSys.Update(dt);
          
@@ -133,7 +145,14 @@ namespace CodeClubShmup1
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Immediate,
+                BlendState.AlphaBlend,
+                SamplerState.LinearClamp,
+                DepthStencilState.None,
+                RasterizerState.CullCounterClockwise,
+                null,
+                camera.update()
+                );
 
 
             //t‰‰ll‰ piirret‰‰n kaikki mit‰ ruudulle halutaan

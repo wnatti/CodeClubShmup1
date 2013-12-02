@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\ScrollingBackground.cs" />
+    <Compile Include="Engine\Camera.cs" />
     <Compile Include="Engine\DrawSys.cs" />
     <Compile Include="Engine\Input.cs" />
     <Compile Include="Engine\Resources.cs" />

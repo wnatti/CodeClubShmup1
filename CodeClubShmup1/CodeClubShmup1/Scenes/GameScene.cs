@@ -27,10 +27,18 @@ namespace CodeClubShmup1.Scenes
         public GameScene()
             :base()
         {
-            enemy_spawn_timer = new Timer(5000);
+            enemy_spawn_timer = new Timer(2000);
             player = new Player(Resources.GetTexture("Ship"), new Vector2(100, 100), 5);
             background1 = new ScrollingBackground(new Vector2(-50, -50), 400, new Sprite(Resources.GetTexture("perkele")));
             background2 = new ScrollingBackground(new Vector2(0, 0), 300, new Sprite(Resources.GetTexture("perkele2")));
+
+            Game1.camera.setZoom(1.5f);
+
+            Vector2 offset =
+                new Vector2(Game1.screen_size.Width, Game1.screen_size.Height) * 0.5f;
+
+            Game1.camera.PositionOffset = offset;
+            Game1.camera.setOffset(offset);
             
         }
 
@@ -60,9 +68,9 @@ namespace CodeClubShmup1.Scenes
                         player.Position.Y),
                         1000));
 
-                enemy_spawn_timer.Delay -= 1000;
+                enemy_spawn_timer.Delay -= 500;
                 if (enemy_spawn_timer.Delay <= 0)
-                     enemy_spawn_timer.Delay += 2000;
+                     enemy_spawn_timer.Delay += 1000;
 
 
             }
@@ -97,6 +105,7 @@ namespace CodeClubShmup1.Scenes
                 if (item.Position.X < 0)
                 {
                     item.IsDead = true;
+                  
                 }
                 if (!player.IsDead)
                 {
@@ -144,14 +153,20 @@ namespace CodeClubShmup1.Scenes
                         i--;
                     }
                 }
-            
 
-            //ruudun leveys
-            //screen_size.Width;
+                Game1.camera.Position = player.Position;
 
-            // TODO: Add your update logic here
-            
-        
+                Vector2 offset = Game1.camera.PositionOffset / Game1.camera.getZoom();
+
+                if (Game1.camera.Position.X < offset.X)
+                    Game1.camera.Position.X = offset.X;
+                if (Game1.camera.Position.X > Game1.screen_size.Width - offset.X)
+                    Game1.camera.Position.X = Game1.screen_size.Width - offset.X;
+
+                if (Game1.camera.Position.Y < offset.Y)
+                    Game1.camera.Position.Y = offset.Y;
+                if (Game1.camera.Position.Y > Game1.screen_size.Height - offset.Y)
+                    Game1.camera.Position.Y = Game1.screen_size.Height - offset.Y;
         
         }
 

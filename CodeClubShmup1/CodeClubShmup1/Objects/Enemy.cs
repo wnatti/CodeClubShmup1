@@ -10,6 +10,7 @@ namespace CodeClubShmup1.Objects
 {
     class Enemy:ObjectParent
     {
+
         public Enemy(Texture2D texture, Vector2 position, float speed)
             : base(texture, position, speed)
         {
@@ -18,6 +19,7 @@ namespace CodeClubShmup1.Objects
 
         public void Update(float deltaTime)
         {
+
             base.Update(deltaTime);
             _position -= new Vector2(1,0) * _speed * deltaTime;
         }

@@ -19,26 +19,33 @@ namespace CodeClubShmup1.Scenes
         List<Bullet> bullets = new List<Bullet>();
         List<Enemy> enemies = new List<Enemy>();
 
+        int points = 0;
+
         Random random = new Random();
         Timer enemy_spawn_timer;
 
         Player player;
 
-        public GameScene()
-            :base()
+        HUDScene hud;
+
+        public override void  Start()
         {
-            enemy_spawn_timer = new Timer(2000);
+            enemy_spawn_timer = new Timer(200);
             player = new Player(Resources.GetTexture("Ship"), new Vector2(100, 100), 5);
             background1 = new ScrollingBackground(new Vector2(-50, -50), 400, new Sprite(Resources.GetTexture("perkele")));
             background2 = new ScrollingBackground(new Vector2(0, 0), 300, new Sprite(Resources.GetTexture("perkele2")));
 
-            Game1.camera.setZoom(1.5f);
+            camera.setZoom(1.5f);
 
             Vector2 offset =
                 new Vector2(Game1.screen_size.Width, Game1.screen_size.Height) * 0.5f;
 
-            Game1.camera.PositionOffset = offset;
-            Game1.camera.setOffset(offset);
+            camera.PositionOffset = offset;
+            camera.setOffset(offset);
+
+            hud = new HUDScene();
+
+            SceneSys.OpenScene(hud);
             
         }
 
@@ -48,15 +55,12 @@ namespace CodeClubShmup1.Scenes
 
             if (Input.IsKeyPressed(Keys.M))
             {
-                SceneSys.PauseCurrentScene(true);
+                Paused = true;
                 SceneSys.OpenScene(new MenuScene());
             }
- 
 
             background1.Update(dt);
             background2.Update(dt);
-
-            
             
             if (Input.IsKeyPressed(Keys.Space) && !player.IsDead)
                 bullets.Add(new Bullet(Resources.GetTexture("Bullet"), player.Position, 100));
@@ -66,12 +70,7 @@ namespace CodeClubShmup1.Scenes
                 enemies.Add(new Enemy(Resources.GetTexture("Enemy"),
                     new Vector2(Game1.screen_size.Width,
                         player.Position.Y),
-                        1000));
-
-                enemy_spawn_timer.Delay -= 500;
-                if (enemy_spawn_timer.Delay <= 0)
-                     enemy_spawn_timer.Delay += 1000;
-
+                        300));
 
             }
 
@@ -80,6 +79,8 @@ namespace CodeClubShmup1.Scenes
             // Game Objects Updates
             if (!player.IsDead)
                 player.Update(dt);
+            else
+                hud.SetGameOver();
 
             foreach (Bullet item in bullets)
             {
@@ -90,6 +91,10 @@ namespace CodeClubShmup1.Scenes
                     if (item.CollisionRect.Intersects(e.CollisionRect)) {
                         e.IsDead = true;
                         item.IsDead = true;
+
+  
+                        points += 10;
+                        hud.SetScore(points);
                     }
                 }
 
@@ -120,7 +125,8 @@ namespace CodeClubShmup1.Scenes
                         }
                         else
                         {
-                            player.IsDead = true;
+                            player.HP -= 10;
+                            hud.SetHP(player.HP);
                             item.IsDead = true;
                         }
                 
@@ -154,25 +160,34 @@ namespace CodeClubShmup1.Scenes
                     }
                 }
 
-                Game1.camera.Position = player.Position;
+                camera.Position = player.Position;
 
-                Vector2 offset = Game1.camera.PositionOffset / Game1.camera.getZoom();
+                if (Input.IsKeyDown(Keys.L))
+                    camera.addZoom(dt);
+                if (Input.IsKeyDown(Keys.K))
+                    camera.addZoom(-dt);
+                if (Input.IsKeyDown(Keys.O))
+                    camera.addRotation(dt);
+                if (Input.IsKeyDown(Keys.P))
+                    camera.addRotation(-dt);
 
-                if (Game1.camera.Position.X < offset.X)
-                    Game1.camera.Position.X = offset.X;
-                if (Game1.camera.Position.X > Game1.screen_size.Width - offset.X)
-                    Game1.camera.Position.X = Game1.screen_size.Width - offset.X;
+                Vector2 offset = camera.PositionOffset / camera.getZoom();
 
-                if (Game1.camera.Position.Y < offset.Y)
-                    Game1.camera.Position.Y = offset.Y;
-                if (Game1.camera.Position.Y > Game1.screen_size.Height - offset.Y)
-                    Game1.camera.Position.Y = Game1.screen_size.Height - offset.Y;
+                if (camera.Position.X < offset.X)
+                    camera.Position.X = offset.X;
+                if (camera.Position.X > Game1.screen_size.Width - offset.X)
+                    camera.Position.X = Game1.screen_size.Width - offset.X;
+
+                if (camera.Position.Y < offset.Y)
+                    camera.Position.Y = offset.Y;
+                if (camera.Position.Y > Game1.screen_size.Height - offset.Y)
+                    camera.Position.Y = Game1.screen_size.Height - offset.Y;
         
         }
 
         public override void Draw()
         {
-
+            Backgroundcolor = Color.Black;
             background1.Draw();
             background2.Draw();
 

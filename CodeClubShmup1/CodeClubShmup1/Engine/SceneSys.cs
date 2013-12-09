@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace CodeClubShmup1.Engine
 {
@@ -10,6 +11,12 @@ namespace CodeClubShmup1.Engine
         static List<SceneParent> currentScenes = new List<SceneParent>();
 
         static bool sceneChanged = false;
+       
+
+        public static SceneParent GetScene(int p)
+        {
+            return currentScenes[p];
+        }
 
         public static void ChangeScene(SceneParent newScene)
         {
@@ -20,6 +27,7 @@ namespace CodeClubShmup1.Engine
         public static void OpenScene(SceneParent newScene)
         {
             currentScenes.Add(newScene);
+            newScene.Start();
             sceneChanged = true;
         }
 
@@ -44,7 +52,10 @@ namespace CodeClubShmup1.Engine
                 {
                     s.Update(dt);
                     if (sceneChanged)
+                    {
+                        sceneChanged = false;
                         break;
+                    }
                 }
             }
         }
@@ -53,8 +64,16 @@ namespace CodeClubShmup1.Engine
         {
             foreach (SceneParent s in currentScenes)
             {
-                s.Draw();
+                s.DrawRender();
             }
+            Game1.graphics.GraphicsDevice.SetRenderTarget(null);
+            Game1.spriteBatch.Begin();
+
+            foreach (SceneParent s in currentScenes)
+            {
+               DrawSys.Draw(s.render,Vector2.Zero, Color.White);
+            }
+            Game1.spriteBatch.End();
         }
     }
 }

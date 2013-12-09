@@ -14,8 +14,8 @@ namespace CodeClubShmup1.Scenes
     {
         Button button1;
 
-        public MenuScene()
-            :base()
+
+        public override void Start()
         {
             button1 = new Button(Resources.GetTexture("button"),
                 new Vector2(400, 250),
@@ -48,8 +48,8 @@ namespace CodeClubShmup1.Scenes
 
         void onButton1Press()
         {
+            SceneSys.GetScene(0).Paused = false;
             SceneSys.CloseCurrentScene();
-            SceneSys.PauseCurrentScene(false);
         }
     }
 }

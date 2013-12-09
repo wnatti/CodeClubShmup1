@@ -11,6 +11,19 @@ namespace CodeClubShmup1.Objects
 {
     public class Player:ObjectParent
     {
+        int hp = 100;
+        public int HP
+        {
+            get { return hp; }
+            set
+            {
+                hp = value;
+                if (hp <= 0)
+                {
+                    IsDead = true;
+                }
+            }
+        }
         public Player(Texture2D texture, Vector2 position, float speed)
             : base(texture, position, speed)
         { }
